@@ -1,0 +1,13 @@
+Author: Ben Webb <bjwebb67@googlemail.com>
+Description: install perl to vendor location
+
+--- a/src/perl/Makefile.am
++++ b/src/perl/Makefile.am
+@@ -22,6 +22,7 @@
+ 	./Build test || make -s build-perl-fail
+ 
+ install: build-perl
++	perl Build.PL installdirs=vendor --destdir $(DESTDIR) || make -s build-perl-fail
+ 	./Build install
+ 
+ build-perl:

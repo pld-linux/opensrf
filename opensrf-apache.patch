@@ -1,0 +1,28 @@
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' opensrf_2.0.0+git20112507~/src/gateway/Makefile.am opensrf_2.0.0+git20112507/src/gateway/Makefile.am
+--- opensrf_2.0.0+git20112507~/src/gateway/Makefile.am	2011-07-25 20:51:22.996253063 +0000
++++ opensrf_2.0.0+git20112507/src/gateway/Makefile.am	2011-07-25 20:56:12.494532631 +0000
+@@ -17,20 +17,21 @@
+ AM_CFLAGS = -D_LARGEFILE64_SOURCE -Wall -I@abs_top_srcdir@/include/ -I$(LIBXML2_HEADERS) -I$(APACHE2_HEADERS) -I$(APR_HEADERS)
+ AM_LDFLAGS = -L$(LIBDIR) -L@top_builddir@/src/libopensrf
+ AP_LIBEXECDIR = `$(APXS2) -q LIBEXECDIR`
++AP_SYSCONFDIR = `$(APXS2) -q SYSCONFDIR`
+ 
+ DISTCLEANFILES = Makefile.in Makefile
+ 
+ install-exec-local: 
+ 	d=`$(APXS2) -q SYSCONFDIR` && \
+-		if ! grep mod_placeholder $${d}/httpd.conf 2>&1 >/dev/null ; \
++		if ! grep mod_placeholder $${d}/httpd.conf 2>&1 >/dev/null && [ "$DESTDIR" == "" ] ; \
+ 		then echo -e "#\n#LoadModule mod_placeholder /usr/lib/apache2/modules/mod_placeholder.so" \
+ 		>> $${d}/httpd.conf; \
+ 	fi
+ 	$(APXS2) -c $(DEF_LDLIBS) $(AM_CFLAGS) $(AM_LDFLAGS) @srcdir@/osrf_json_gateway.c apachetools.c apachetools.h libopensrf.so
+ 	$(APXS2) -c $(DEF_LDLIBS) $(AM_CFLAGS) $(AM_LDFLAGS) @srcdir@/osrf_http_translator.c apachetools.c apachetools.h libopensrf.so
+ 	$(MKDIR_P) $(DESTDIR)$(AP_LIBEXECDIR)
+-	$(APXS2) -i -S LIBEXECDIR=$(DESTDIR)$(AP_LIBEXECDIR) -a @srcdir@/osrf_json_gateway.la
+-	$(APXS2) -i -S LIBEXECDIR=$(DESTDIR)$(AP_LIBEXECDIR) -a @srcdir@/osrf_http_translator.la
++	$(APXS2) -i -S LIBEXECDIR=$(DESTDIR)$(AP_LIBEXECDIR) -S SYSCONFDIR=$(DESTDIR)$(AP_SYSCONFDIR) @srcdir@/osrf_json_gateway.la
++	$(APXS2) -i -S LIBEXECDIR=$(DESTDIR)$(AP_LIBEXECDIR) -S SYSCONFDIR=$(DESTDIR)$(AP_SYSCONFDIR) @srcdir@/osrf_http_translator.la
+ 
+ clean-local:
+ 	rm -f @srcdir@/osrf_http_translator.la @srcdir@/osrf_http_translator.lo @srcdir@/osrf_http_translator.slo @srcdir@/osrf_json_gateway.la @srcdir@/osrf_json_gateway.lo @srcdir@/osrf_json_gateway.slo
