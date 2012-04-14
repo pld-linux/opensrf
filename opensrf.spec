@@ -1,7 +1,7 @@
 # TODO
 # - FHS
 # - pld deps
-# - can't build itself: /usr/bin/ld: cannot find -lopensrf
+# - fix parallel build deps: can't build itself: /usr/bin/ld: cannot find -lopensrf
 Summary:	OpenSRF Message Routing Network
 Name:		opensrf
 Version:	2.0.1
@@ -139,7 +139,7 @@ minimal development and deployment overhead.
 ./configure \
 	--prefix=/opensrf \
 	--sysconfdir=/opensrf/conf
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
